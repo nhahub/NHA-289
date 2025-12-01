@@ -110,7 +110,7 @@ class VTOAgent:
                 inpainted_img = self.vto_module.process_tryon(user_img_path, garment_img_path)
                 
                 # Save output
-                output_path = "/kaggle/working/final_tryon.png"
+                output_path = "outputs/final_tryon.png"
                 inpainted_img.save(output_path)
                 
                 agent_response = f"VTO Success! Image saved at {output_path}"
