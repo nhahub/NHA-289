@@ -1,23 +1,20 @@
 from langchain.agents import initialize_agent, AgentType
 from langchain.memory import ConversationBufferMemory
-from .image_search import image_search_tool
-from .llm import llm_response
-from .memory import add_to_memory
+#from .image_search import image_search_tool
+#from .llm import llm_response
+#from .memory import add_to_memory
 
-def build_agent(llm):
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-    agent = initialize_agent(
-        tools=[image_search_tool],
-        llm=llm,
-        agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=True,
-        memory=memory,
-        handle_parsing_errors=True
-    )
-    return agent
+import os
+from modules.agent_vto import VTOAgent
+from modules.llm import init_llm
 
-def run_agent(llm):
-    agent = build_agent(llm)
+def run_agent():
+    model_name = os.environ.get("VTO_LLM_MODEL", "gpt2")  # Replace with your model
+    token = os.environ.get("VTO_LLM_TOKEN")
+
+    llm = init_llm(model_name=model_name, token=token)
+    agent = VTOAgent(llm=llm)
+
     print("VTO Agent ready! Type 'exit' to quit.\n")
 
     while True:
@@ -26,17 +23,23 @@ def run_agent(llm):
             print("Goodbye!")
             break
 
-        images = image_search_tool.func(user_input)
-        try:
-            agent_response = agent.run(user_input)
-        except Exception as e:
-            agent_response = f"Error: {e}"
+        # Optionally ask for user & garment images
+        user_img_path = input("User image path (or press Enter to skip): ").strip() or None
+        garment_img_path = input("Garment image path (or press Enter to skip): ").strip() or None
 
-        print("\nAgent:", agent_response)
+        try:
+            response, images = agent.handle_input(user_input, user_img_path, garment_img_path)
+        except Exception as e:
+            response = f"Error: {e}"
+            images = []
+
+        print("\nAgent:", response)
         if images:
-            print("\nImages found:")
+            print("\nImages found/generated:")
             for i, img in enumerate(images, 1):
                 print(f"{i}. {img['title']}: {img['url']}")
 
-        add_to_memory(user_input, agent_response, images)
-        print("\nMemory updated!\n")
+        print("\n--- Memory updated ---\n")
+
+#if __name__ == "__main__":
+#    run_agent()
