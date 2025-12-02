@@ -9,7 +9,7 @@ from modules.agent_vto import VTOAgent
 from modules.llm import init_llm
 
 def run_agent():
-    model_name = os.environ.get("VTO_LLM_MODEL", "gpt2")  # Replace with your model
+    model_name = os.environ.get("VTO_LLM_MODEL", "Qwen/Qwen2.5-1.5B-Instruct")  # Replace with your model
     token = os.environ.get("VTO_LLM_TOKEN")
 
     llm = init_llm(model_name=model_name, token=token)
