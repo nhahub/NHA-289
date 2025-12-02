@@ -1,13 +1,16 @@
 import os
-import json
 import torch
 from PIL import Image
 from langchain.memory import ConversationBufferMemory
 from langchain.agents import Tool, AgentExecutor, AgentType, initialize_agent
 from langchain import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-from ddgs import DDGS
-from modules.vto_integration import VTOAgentModule  
+from modules.vto_integration import VTOAgentModule
+
+
+from memory import add_to_memory
+from image_search import image_search_tool, search_images
+  
 
 # -------------------------------
 # MEMORY
