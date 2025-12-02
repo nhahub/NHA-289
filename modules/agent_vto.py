@@ -39,17 +39,17 @@ def add_to_memory(user_input, agent_response, images):
 # -------------------------------
 # SEARCH TOOL
 # -------------------------------
-def search_images(query: str, max_results: int = 5):
-    results = []
-    try:
-        with DDGS() as ddgs:
-            for r in ddgs.images(query):
-                results.append({"title": r["title"], "url": r["image"]})
-                if len(results) >= max_results:
-                    break
-    except:
-        pass
-    return results
+#def search_images(query: str, max_results: int = 5):
+    #results = []
+    #try:
+        #with DDGS() as ddgs:
+            #for r in ddgs.images(query):
+                #results.append({"title": r["title"], "url": r["image"]})
+                #if len(results) >= max_results:
+                    #break
+    #except:
+        #pass
+    #return results
 
 image_search_tool = Tool(
     name="Image Search",
@@ -62,7 +62,7 @@ image_search_tool = Tool(
 # -------------------------------
 def build_llm(model_name: str, token: str):
     if token is None:
-        raise ValueError("❌ Missing API token. Set environment variable: VTO_LLM_TOKEN")
+        raise ValueError("Missing API token. Set environment variable: VTO_LLM_TOKEN")
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=token)
     try:
@@ -111,7 +111,7 @@ class VTOAgent:
         # Dynamic LoRA path
         self.lora_path = lora_path or os.environ.get("VTO_LORA_PATH", "ckpts/lora.safetensors")
         if not os.path.exists(self.lora_path):
-            raise FileNotFoundError(f"❌ LoRA file not found at {self.lora_path}. Set env VTO_LORA_PATH")
+            raise FileNotFoundError(f"LoRA file not found at {self.lora_path}. Set env VTO_LORA_PATH")
 
         # Initialize VTO module
         self.vto_module = VTOAgentModule(lora_path=self.lora_path)
